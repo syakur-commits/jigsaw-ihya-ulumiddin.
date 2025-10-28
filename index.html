@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jigsaw: Epistemologi Al-Ghazali</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat Tone.js untuk audio notifikasi timer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Memuat Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Menggunakan font Inter sebagai default */
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        /* Styling untuk navigasi fase yang aktif */
+        .nav-button.active {
+            background-color: #0d9488; /* teal-600 */
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Styling untuk accordion */
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        /* Efek panah sederhana untuk accordion */
+        details summary::after {
+            content: '+';
+            float: right;
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+            font-weight: 400;
+            transition: transform 0.2s ease-in-out;
+        }
+        details[open] summary::after {
+            transform: rotate(45deg);
+        }
+        details[open] summary {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased">
+
+    <div class="container mx-auto max-w-4xl p-4 sm:p-6 md:p-8">
+
+        <!-- [JUDUL UTAMA] -->
+        <header class="mb-6">
+            <h1 class="text-3xl sm:text-4xl font-bold text-teal-700">Aktivitas Jigsaw: Epistemologi Al-Ghazali & Desain Pembelajaran</h1>
+            <p class="text-lg text-gray-600 mt-1">Mata Kuliah Teori Belajar dan Pembelajaran PAI</p>
+        </header>
+
+        <!-- [KONTROL TIMER] -->
+        <div class="bg-white p-4 rounded-lg shadow-md mb-6 sticky top-4 z-10 border border-teal-200">
+            <h3 class="text-lg font-semibold text-center mb-3 text-gray-700">Timer Aktivitas</h3>
+            <div id="timer-display" class="text-5xl font-bold text-center text-teal-600 mb-4">
+                00:00
+            </div>
+            <div class="flex flex-wrap justify-center gap-2">
+                <button onclick="startTimer(30)" class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-md font-medium transition-colors">Ahli (30 Menit)</button>
+                <button onclick="startTimer(20)" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition-colors">Sintesis (20 Menit)</button>
+                <button onclick="startTimer(10)" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-md font-medium transition-colors">Aplikasi (10 Menit)</button>
+                <button onclick="stopTimer()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md font-medium transition-colors">Stop</button>
+                <button onclick="resetTimer()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md font-medium transition-colors">Reset</button>
+            </div>
+        </div>
+
+        <!-- [NAVIGASI FASE] -->
+        <nav class="flex flex-wrap gap-2 mb-8" role="tablist">
+            <button id="nav-1" onclick="showPhase(1)" class="nav-button flex-grow sm:flex-none text-left px-5 py-3 rounded-lg bg-white shadow border border-gray-200 hover:bg-gray-50 transition-colors">1. Pengantar</button>
+            <button id="nav-2" onclick="showPhase(2)" class="nav-button flex-grow sm:flex-none text-left px-5 py-3 rounded-lg bg-white shadow border border-gray-200 hover:bg-gray-50 transition-colors">2. Fase Ahli</button>
+            <button id="nav-3" onclick="showPhase(3)" class="nav-button flex-grow sm:flex-none text-left px-5 py-3 rounded-lg bg-white shadow border border-gray-200 hover:bg-gray-50 transition-colors">3. Fase Asal</button>
+            <button id="nav-4" onclick="showPhase(4)" class="nav-button flex-grow sm:flex-none text-left px-5 py-3 rounded-lg bg-white shadow border border-gray-200 hover:bg-gray-50 transition-colors">4. Aplikasi</button>
+            <button id="nav-5" onclick="showPhase(5)" class="nav-button flex-grow sm:flex-none text-left px-5 py-3 rounded-lg bg-white shadow border border-gray-200 hover:bg-gray-50 transition-colors">5. Debrief</button>
+        </nav>
+
+        <!-- [KONTAINER KONTEN FASE] -->
+        <main id="phase-container">
+
+            <!-- [BAGIAN 1: PENGANTAR & TUJUAN] -->
+            <div id="phase-1" class="phase-content bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-teal-700 mb-4">1. Pengantar & Tujuan</h2>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-2">Tujuan Pembelajaran</h3>
+                    <p class="text-gray-700 mb-2">Setelah mengikuti aktivitas ini, mahasiswa diharapkan mampu:</p>
+                    <ul class="list-disc list-outside pl-6 space-y-1 text-gray-700">
+                        <li>Mengidentifikasi konsep kunci epistemologi Al-Ghazali (hakikat, sumber, klasifikasi, dan tujuan ilmu).</li>
+                        <li>Menganalisis implikasi epistemologi Al-Ghazali terhadap peran guru dan etika menuntut ilmu.</li>
+                        <li>Merumuskan prinsip-prinsip pedagogis PAI yang diturunkan dari pemikiran Al-Ghazali.</li>
+                        <li>Merancang kerangka aktivitas pembelajaran PAI tingkat SMA/MA yang selaras dengan prinsip tersebut.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Alur Aktivitas (Total 100 Menit)</h3>
+                    <ol class="list-decimal list-outside pl-6 space-y-2 text-gray-700">
+                        <li><span class="font-semibold">(10 Menit) Pengantar & Pembentukan Kelompok Asal:</span> Bentuk kelompok 4 orang, tentukan nomor 1, 2, 3, dan 4.</li>
+                        <li><span class="font-semibold">(30 Menit) Fase Kelompok Ahli:</span> Berkumpul dengan nomor yang sama untuk mendalami satu topik.</li>
+                        <li><span class="font-semibold">(30 Menit) Fase Kelompok Asal (Sintesis):</span> Kembali ke kelompok asal, saling berbagi, dan merumuskan prinsip.</li>
+                        <li><span class="font-semibold">(20 Menit) Fase Aplikasi:</span> Merancang kerangka pembelajaran berdasarkan prinsip yang dirumuskan.</li>
+                        <li><span class="font-semibold">(10 Menit) Debrief Kelas:</span> Refleksi dan penutupan.</li>
+                    </ol>
+                </div>
+                 <a href="https://docs.google.com/document/d/example" target="_blank" class="mt-6 inline-block bg-blue-600 text-white font-medium px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Klik untuk Materi Bacaan Utama (Contoh Link Google Docs)
+                </a>
+            </div>
+
+            <!-- [BAGIAN 2: FASE KELOMPOK AHLI] -->
+            <div id="phase-2" class="phase-content hidden bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-teal-700 mb-4">2. Fase Kelompok Ahli (30 Menit)</h2>
+                <p class="text-lg text-gray-700 mb-6">Silakan berkumpul dengan rekan yang memiliki nomor yang sama. Klik pada bagian Anda untuk melihat materi diskusi dan pertanyaan pemandu.</p>
+
+                <div class="space-y-4">
+                    <!-- Ahli 1 -->
+                    <details class="bg-white border border-gray-200 rounded-lg group">
+                        <summary class="p-5 font-medium text-xl cursor-pointer list-none flex justify-between items-center group-hover:bg-gray-50 rounded-t-lg">
+                            Kelompok Ahli 1: Hakikat dan Sumber Ilmu
+                        </summary>
+                        <div class="p-5 border-t border-gray-200 text-gray-700 space-y-3">
+                            <p><b>Fokus Bacaan:</b> Konsep Ilmu Dalam Perspektif Al-Ghazali/halaman 2 - 3]</p>
+                            <b>Pertanyaan Pemandu:</b>
+                            <ol class="list-decimal list-outside pl-6 space-y-1">
+                                <li>Apa perbedaan mendasar antara "ilmu" (pengetahuan) dalam pandangan Al-Ghazali dengan pandangan positivisme modern?</li>
+                                <li>Bagaimana konsep ilmu <i>ladunni</i> (ilmu yang diterima langsung dari Tuhan) memengaruhi cara pandang kita terhadap sumber pengetahuan selain indra dan akal?</li>
+                                <li>Bagaimana pandangan ini memengaruhi peran guru PAI? Apakah ia hanya transferor pengetahuan atau lebih dari itu?</li>
+                            </ol>
+                        </div>
+                    </details>
+
+                    <!-- Ahli 2 -->
+                    <details class="bg-white border border-gray-200 rounded-lg group">
+                        <summary class="p-5 font-medium text-xl cursor-pointer list-none flex justify-between items-center group-hover:bg-gray-50 rounded-t-lg">
+                            Kelompok Ahli 2: Klasifikasi dan Tujuan Ilmu
+                        </summary>
+                        <div class="p-5 border-t border-gray-200 text-gray-700 space-y-3">
+                            <p><b>Fokus Bacaan:</b> [Sebutkan bagian/halaman spesifik dari materi utama]</p>
+                            <b>Pertanyaan Pemandu:</b>
+                            <ol class="list-decimal list-outside pl-6 space-y-1">
+                                <li>Jelaskan perbedaan antara <i>Ilmu Fardhu 'Ain</i> dan <i>Ilmu Fardhu Kifayah</i> menurut Al-Ghazali. Berikan contoh kontekstual dalam kurikulum PAI.</li>
+                                <li>Apa tujuan akhir dari menuntut ilmu (tujuan ukhrawi vs. duniawi) menurut Al-Ghazali?</li>
+                                <li>Bagaimana klasifikasi dan tujuan ilmu ini seharusnya memengaruhi prioritas materi dalam pembelajaran PAI di sekolah?</li>
+                            </ol>
+                        </div>
+                    </details>
+
+                    <!-- Ahli 3 -->
+                    <details class="bg-white border border-gray-200 rounded-lg group">
+                        <summary class="p-5 font-medium text-xl cursor-pointer list-none flex justify-between items-center group-hover:bg-gray-50 rounded-t-lg">
+                            Kelompok Ahli 3: Etika Penuntut Ilmu (Murid)
+                        </summary>
+                        <div class="p-5 border-t border-gray-200 text-gray-700 space-y-3">
+                            <p><b>Fokus Bacaan:</b> [Sebutkan bagian/halaman spesifik dari materi utama]</p>
+                            <b>Pertanyaan Pemandu:</b>
+                            <ol class="list-decimal list-outside pl-6 space-y-1">
+                                <li>Apa adab/etika terpenting yang harus dimiliki seorang siswa menurut Al-Ghazali (misal: niat, tawadhu, membersihkan hati)?</li>
+                                <li>Mengapa Al-Ghazali sangat menekankan pentingnya "membersihkan hati" (tazkiyatun nafs) *sebelum* menerima ilmu?</li>
+                                <li>Bagaimana guru PAI modern dapat mengintegrasikan pembinaan adab ini dalam pembelajaran di kelas (selain hanya menyuruh menghafal)?</li>
+                            </ol>
+                        </div>
+                    </details>
+
+                    <!-- Ahli 4 -->
+                    <details class="bg-white border border-gray-200 rounded-lg group">
+                        <summary class="p-5 font-medium text-xl cursor-pointer list-none flex justify-between items-center group-hover:bg-gray-50 rounded-t-lg">
+                            Kelompok Ahli 4: Etika Pengajar (Guru)
+                        </summary>
+                        <div class="p-5 border-t border-gray-200 text-gray-700 space-y-3">
+                            <p><b>Fokus Bacaan:</b> [Sebutkan bagian/halaman spesifik dari materi utama]</p>
+                            <b>Pertanyaan Pemandu:</b>
+                            <ol class="list-decimal list-outside pl-6 space-y-1">
+                                <li>Apa etika terpenting seorang guru menurut Al-Ghazali (misal: kasih sayang, ikhlas, tidak merendahkan ilmu lain)?</li>
+                                <li>Bagaimana konsep guru sebagai "pewaris nabi" dan "pembimbing spiritual" (mursyid) relevan untuk guru PAI di sekolah formal?</li>
+                                <li>Tantangan terbesar apa yang dihadapi guru PAI modern jika ingin menerapkan etika Al-Ghazali dalam konteks sekolah saat ini?</li>
+                            </ol>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- [BAGIAN 3: FASE KELOMPOK ASAL] -->
+            <div id="phase-3" class="phase-content hidden bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-teal-700 mb-4">3. Fase Kelompok Asal (Sintesis - 30 Menit)</h2>
+                <p class="text-lg text-gray-700 mb-6">Kembalilah ke kelompok asal Anda (4 orang) untuk berbagi dan mensintesis temuan.</p>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-2">Langkah 1 (20 menit): Berbagi Pengetahuan</h3>
+                    <p class="text-gray-700">Setiap ahli (nomor 1, 2, 3, 4) memiliki waktu sekitar 5 menit untuk mengajarkan/menjelaskan temuan utamanya dari fase kelompok ahli kepada anggota kelompok asal lainnya.</p>
+                    <p class="text-gray-700 mt-2">Pastikan semua anggota memahami keempat topik sebelum melanjutkan.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Langkah 2 (10 menit): Sintesis Prinsip</h3>
+                    <p class="text-gray-700 mb-4">Setelah semua berbagi, diskusikan dan rumuskan bersama:</p>
+                    <blockquote class="border-l-4 border-teal-500 bg-teal-50 p-4 rounded-r-lg">
+                        <p class="text-lg font-medium text-teal-800">"Tiga (3) Prinsip Pedagogis Mendasar turunan dari epistemologi Al-Ghazali untuk guru PAI modern."</p>
+                    </blockquote>
+                    <p class="text-gray-700 mt-4">Tuliskan 3 prinsip ini di lembar kerja Anda. Prinsip ini akan menjadi dasar untuk fase aplikasi.</p>
+                </div>
+            </div>
+
+            <!-- [BAGIAN 4: APLIKASI & TEMPLAT] -->
+            <div id="phase-4" class="phase-content hidden bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-teal-700 mb-4">4. Aplikasi & Templat (20 Menit)</h2>
+                <p class="text-lg text-gray-700 mb-6">Pilih <span class="font-semibold">satu topik PAI</span> (misal: Iman kepada Malaikat, Adab Berpakaian, Zakat, dll.) untuk tingkat SMA/MA. Isilah templat di bawah ini. Pastikan rancangan Anda mencerminkan <span class="font-semibold">3 Prinsip Pedagogis</span> yang telah Anda rumuskan.</p>
+                
+                <button id="copy-btn" onclick="copyTemplate()" class="mb-4 bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2 rounded-lg transition-colors">
+                    Salin Teks Templat
+                </button>
+
+                <!-- Templat yang akan disalin -->
+                <textarea id="template-to-copy" class="absolute -left-full">
+Templat Kerangka Pembelajaran (Epistemologi Al-Ghazali)
+
+Kelompok: [Nama Anggota]
+Topik PAI (SMA/MA): [Isi di sini]
+
+Tiga Prinsip Pedagogis Al-Ghazali (Hasil Sintesis):
+1. [Prinsip 1]
+2. [Prinsip 2]
+3. [Prinsip 3]
+
+Kerangka Rancangan:
+
+1. Tujuan Pembelajaran (Mengacu pada 'Tazkiyatun Nafs' & Pemahaman):
+   [Siswa tidak hanya tahu, tapi juga...]
+
+2. Aktivitas Pembuka (Menata Niat & Membersihkan Hati):
+   [Bagaimana Anda membuka kelas untuk membangun adab & niat? Misal: refleksi singkat, doa, dll.]
+
+3. Aktivitas Inti (Menghubungkan Akal, Indra, dan Hati):
+   [Aktivitas apa yang mencerminkan Prinsip 1, 2, & 3? Bagaimana menghubungkan materi dengan Allah (Ilmu Ladunni) dan kehidupan?]
+
+4. Aktivitas Penutup (Refleksi & Pengamalan):
+   [Bagaimana siswa merefleksikan apa yang dipelajari untuk diamalkan (ilmu yang bermanfaat)?]
+                </textarea>
+                
+                <!-- Tampilan Tabel Templat -->
+                <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                    <table class="w-full min-w-[600px] divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th colspan="2" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Templat Kerangka Pembelajaran (Epistemologi Al-Ghazali)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 w-1/3 font-medium text-gray-800">Topik PAI (SMA/MA)</td>
+                                <td class="px-6 py-4 text-gray-700">[Isi di sini...]</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 w-1/3 font-medium text-gray-800">3 Prinsip Pedagogis (Sintesis)</td>
+                                <td class="px-6 py-4 text-gray-700">
+                                    <ol class="list-decimal pl-5">
+                                        <li>[Prinsip 1]</li>
+                                        <li>[Prinsip 2]</li>
+                                        <li>[Prinsip 3]</li>
+                                    </ol>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 w-1/3 font-medium text-gray-800">Tujuan Pembelajaran (Tazkiyatun Nafs)</td>
+                                <td class="px-6 py-4 text-gray-700">[Siswa tidak hanya tahu, tapi juga...]</td>
+                            </tr>
+                             <tr>
+                                <td class="px-6 py-4 w-1/3 font-medium text-gray-800">Aktivitas Pembuka (Niat & Adab)</td>
+                                <td class="px-6 py-4 text-gray-700">[Bagaimana membuka kelas untuk membangun adab & niat?]</td>
+                            </tr>
+                             <tr>
+                                <td class="px-6 py-4 w-1/3 font-medium text-gray-800">Aktivitas Inti (Akal, Indra, Hati)</td>
+                                <td class="px-6 py-4 text-gray-700">[Aktivitas apa yang mencerminkan 3 Prinsip Anda?]</td>
+                            </tr>
+                             <tr>
+                                <td class="px-6 py-4 w-1/3 font-medium text-gray-800">Aktivitas Penutup (Refleksi & Amal)</td>
+                                <td class="px-6 py-4 text-gray-700">[Bagaimana siswa merefleksikan ilmu untuk diamalkan?]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- [BAGIAN 5: PANDUAN DEBRIEF] -->
+            <div id="phase-5" class="phase-content hidden bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-teal-700 mb-4">5. Panduan Debrief (10 Menit)</h2>
+                <p class="text-lg text-gray-700 mb-6">Fasilitator/Dosen akan memandu diskusi refleksi kelas menggunakan pertanyaan berikut:</p>
+                <ul class="list-disc list-outside pl-6 space-y-3 text-gray-700">
+                    <li>Prinsip pedagogis apa yang paling menantang untuk dirumuskan atau diterapkan dari pemikiran Al-Ghazali? Mengapa?</li>
+                    <li>Tantangan praktis apa yang Anda temui saat mencoba merancang aktivitas pembelajaran PAI yang berpusat pada "hati" (tazkiyatun nafs) selain hanya kognitif?</li>
+                    <li>Bagaimana proses jigsaw ini membantu Anda memahami epistemologi Al-Ghazali secara lebih mendalam dibandingkan jika hanya membaca sendirian?</li>
+                    <li>Satu hal apa dari pemikiran Al-Ghazali tentang ilmu yang paling relevan untuk Anda sebagai calon guru PAI?</li>
+                </ul>
+            </div>
+        </main>
+        
+        <footer class="mt-12 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 - Aktivitas Kelas PAI - Desain oleh Dosen</p>
+        </footer>
+    </div>
+
+    <script>
+        let currentPhase = 1;
+        let timerInterval;
+        let endTime;
+        let synth; // Untuk audio
+
+        // Inisialisasi Tone.js setelah interaksi pengguna (dibutuhkan oleh browser modern)
+        function initAudio() {
+            if (!synth) {
+                synth = new Tone.Synth().toDestination();
+            }
+        }
+
+        // Fungsi untuk menampilkan fase yang dipilih
+        function showPhase(phaseNumber) {
+            initAudio(); // Inisialisasi audio saat navigasi pertama
+            
+            // Sembunyikan semua konten fase
+            document.querySelectorAll('.phase-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Hapus style aktif dari semua tombol nav
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Tampilkan konten fase yang dipilih
+            const activeContent = document.getElementById('phase-' + phaseNumber);
+            if (activeContent) {
+                activeContent.classList.remove('hidden');
+            }
+
+            // Tambahkan style aktif ke tombol nav yang diklik
+            const activeButton = document.getElementById('nav-' + phaseNumber);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+            
+            currentPhase = phaseNumber;
+            window.scrollTo(0, 0); // Scroll ke atas halaman
+        }
+
+        // --- Fungsi Timer ---
+
+        const timerDisplay = document.getElementById('timer-display');
+
+        function startTimer(minutes) {
+            initAudio(); // Pastikan audio siap
+            clearInterval(timerInterval); // Hentikan timer sebelumnya jika ada
+            
+            endTime = Date.now() + minutes * 60 * 1000;
+            
+            updateTimerDisplay(); // Panggil sekali agar langsung update
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const remaining = endTime - Date.now();
+
+            if (remaining <= 0) {
+                clearInterval(timerInterval);
+                timerDisplay.textContent = "Waktu Habis!";
+                playTimerEndSound();
+                return;
+            }
+
+            const minutes = Math.floor((remaining / 1000 / 60) % 60);
+            const seconds = Math.floor((remaining / 1000) % 60);
+
+            timerDisplay.textContent = `${pad(minutes)}:${pad(seconds)}`;
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerDisplay.textContent = "00:00";
+        }
+
+        function pad(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        function playTimerEndSound() {
+            // Memainkan nada sederhana saat waktu habis
+            if (synth) {
+                const now = Tone.now();
+                synth.triggerAttackRelease("C5", "8n", now);
+                synth.triggerAttackRelease("G5", "8n", now + 0.3);
+            }
+        }
+
+        // --- Fungsi Salin Templat ---
+        function copyTemplate() {
+            const templateText = document.getElementById('template-to-copy').value;
+            const copyBtn = document.getElementById('copy-btn');
+
+            // Fallback untuk 'document.execCommand' yang lebih kompatibel dalam iframe
+            const textArea = document.createElement("textarea");
+            textArea.value = templateText;
+            textArea.style.position = "fixed"; // Jauhkan dari pandangan
+            textArea.style.top = "-9999px";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                copyBtn.textContent = 'Berhasil Tersalin!';
+                copyBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                copyBtn.classList.add('bg-gray-500');
+            } catch (err) {
+                copyBtn.textContent = 'Gagal Menyalin';
+                console.error('Gagal menyalin teks: ', err);
+            }
+
+            document.body.removeChild(textArea);
+
+            // Reset tombol setelah 2 detik
+            setTimeout(() => {
+                copyBtn.textContent = 'Salin Teks Templat';
+                copyBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                copyBtn.classList.remove('bg-gray-500');
+            }, 2000);
+        }
+
+
+        // Tampilkan fase pertama saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            showPhase(1);
+        });
+    </script>
+
+</body>
+</html>
